@@ -6,7 +6,8 @@ int main(int argc, char* argv[]) {
     SetConsoleCP(CP_UTF8);
 
     if (argc == 1) {
-        std::cout << "EnglishPy, a language that transpiles English code to Python"
+        std::cout << "Flu...";
     }
+
     return 0;
 }
