@@ -1,0 +1,6 @@
+declare x = 5;
+x = 3;
+
+declare function abs() {
+
+};
