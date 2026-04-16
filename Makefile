@@ -17,7 +17,7 @@ else
 	PATHSEP = /
 endif
 
-BIN := enpy$(EXE)
+BIN := flu$(EXE)
 
 .PHONY: all clean
 
