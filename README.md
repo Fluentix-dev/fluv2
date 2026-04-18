@@ -7,5 +7,5 @@ Flu is a programming language that the Fluentix community is trying to revive
 - `flu conv <file_name>` to transpile the source code to Python code
 
 # Error codes
-- Error #1: There is a number with more than 1 decimal point
-- Error #2: Unexpected character
+- Error `#1`: There is a number with more than 1 decimal point. Classified as a Syntax Error
+- Error `#2`: Unexpected character. Classified as a Syntax Error
