@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (command == "--version") {
-        std::cout << "Flu version Beta - In development...";
+        std::cout << "Flu version Alpha - In development...";
         return 0;
     }
 
