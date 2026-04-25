@@ -5,6 +5,7 @@ Flu is a programming language that the Fluentix community is trying to revive
 - `flu help` to get all of the commands Flu supports
 - `flu --version` to get the current version of Flu
 - `flu conv <file_name>` to transpile the source code to Python code
+- `flu clean` to clear the terminal
 
 # Error codes
 - Error `#1`: There is a number with more than 1 decimal point. Classified as a Syntax Error
