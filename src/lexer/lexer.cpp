@@ -155,6 +155,8 @@ LexerResult Lexer::tokenize() {
         return LexerResult({}, Error("Syntax Error", std::string("unexpected character: '") + this->current_char + "'", 2, start, this->position));
     }
 
-    tokens.push_back(Token(TokenType::EndOfFile, "EOF", this->position, this->position));
+    Position start = this->position;
+    this->advance();
+    tokens.push_back(Token(TokenType::EndOfFile, "EOF", start, this->position));
     return LexerResult(tokens, Error("NULL", "", 0, this->position, this->position));
 }

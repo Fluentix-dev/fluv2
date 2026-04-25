@@ -1,3 +1,4 @@
+#pragma once
 #include "../positions/positions.hpp"
 
 struct Error {
