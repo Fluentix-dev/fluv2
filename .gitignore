@@ -1,4 +1,2 @@
-*.o
-*.obj
-*.exe
-*.so
+build/
+flu.exe
