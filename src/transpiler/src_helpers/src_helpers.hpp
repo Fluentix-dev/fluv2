@@ -169,7 +169,7 @@ class Int(RuntimeValue):
         """
         Int division
         """
-        if other.type not in ("int",):
+        if other.type not in ("int", "float"):
             error: Error = Error("Type Error", f"cannot divide '{self.type}' to '{other.type}'", 12, self.start, other.end)
             error.print()
         
