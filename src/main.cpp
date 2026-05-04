@@ -1,5 +1,6 @@
 #include "lexer/lexer.hpp"
 #include "parser/parser.hpp"
+#include "transpiler/transpiler.hpp"
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -122,17 +123,35 @@ int main(int argc, char* argv[]) {
         LexerResult tokens = lexer.tokenize();
         if (tokens.error.type != "NULL") {
             tokens.error.print();
-            return 0;
+            return tokens.error.error_code;
         }
 
         Parser parser = Parser(tokens.tokens);
         StatementResult ast = parser.parse();
         if (ast.error.type != "NULL") {
             ast.error.print();
+            return ast.error.error_code;
+        }
+
+        Transpiler transpiler = Transpiler(std::static_pointer_cast<BlockStatement>(ast.node));
+        std::string transpiled = transpiler.transpile();
+
+        if (argc == 3) {
+            std::cout << "Output file not provided\n";
             return 0;
         }
 
-        print_stmt(ast.node);
+        std::string file_dest = argv[3];
+        std::ofstream out_file(file_dest);
+        if (!out_file.is_open()) {
+            std::cout << "Unable to open file '" << file_dest << "'\n";
+            return 0;
+        }
+
+        out_file << transpiled;
+        out_file.close();
+
+        std::cout << "Successfully transpiled source code from '" << fn << "' to '" << file_dest << "'\n";
         return 0;
     }
  
