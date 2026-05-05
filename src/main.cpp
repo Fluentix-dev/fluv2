@@ -133,7 +133,7 @@ int main(int argc, char* argv[]) {
             return ast.error.error_code;
         }
 
-        Transpiler transpiler = Transpiler(std::static_pointer_cast<BlockStatement>(ast.node));
+        Transpiler transpiler = Transpiler(fn, real, std::static_pointer_cast<BlockStatement>(ast.node));
         std::string transpiled = transpiler.transpile();
 
         if (argc == 3) {

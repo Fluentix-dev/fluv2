@@ -286,7 +286,8 @@ class Verifier:
 verifier = Verifier()
 
 class Program:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, fn: str, src: str) -> None:
+        self.fn = fn
+        self.src = src
     
     def main(self) -> None:

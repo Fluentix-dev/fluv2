@@ -1,13 +1,11 @@
 #include "transpiler.hpp"
 #include "src_helpers/src_helpers.hpp"
 
-Transpiler::Transpiler(const std::shared_ptr<BlockStatement> &ast) {
-    this->ast = ast;
-}
+Transpiler::Transpiler(const std::string &fn, const std::string &src, const std::shared_ptr<BlockStatement> &ast) : fn(fn), src(src), ast(ast) {}
 
 std::string Transpiler::transpile() {
     std::string main_code = this->block(this->ast, STARTING_INDENTATION);
-    return STARTING_SRC + main_code + IF_MAIN_PROGRAM;
+    return STARTING_SRC + main_code + generate_if_main_program(fn, src);
 }
 
 std::string Transpiler::block(const std::shared_ptr<BlockStatement> &block, const size_t indentation) {

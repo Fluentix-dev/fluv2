@@ -290,19 +290,17 @@ class Verifier:
 verifier = Verifier()
 
 class Program:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, fn: str, src: str) -> None:
+        self.fn = fn
+        self.src = src
     
     def main(self) -> None:
 )";
-
-const std::string IF_MAIN_PROGRAM = R"(
-if __name__ == "__main__":
-    program = Program()
-    program.main())";
 
 const size_t STARTING_INDENTATION = 2;
 const size_t INDENTATION_SIZE = 4;
 
 std::string generate_indentation(const size_t indentation);
 std::string generate_position(const Position &position);
+std::string convert_to_code_string(const std::string string);
+std::string generate_if_main_program(const std::string &fn, const std::string &src);

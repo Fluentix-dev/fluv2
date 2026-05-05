@@ -286,12 +286,13 @@ class Verifier:
 verifier = Verifier()
 
 class Program:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, fn: str, src: str) -> None:
+        self.fn = fn
+        self.src = src
     
     def main(self) -> None:
-        print(verifier.verify_int("3", Position("files/main.flu", """3 / 0.5""", 1, 1), Position("files/main.flu", """3 / 0.5""", 2, 1)).div(verifier.verify_float("0.5", Position("files/main.flu", """3 / 0.5""", 5, 1), Position("files/main.flu", """3 / 0.5""", 8, 1))).value)
+        print(verifier.verify_int("3", Position(self.fn, self.src, 1, 1), Position(self.fn, self.src, 2, 1)).div(verifier.verify_float("0.5", Position(self.fn, self.src, 5, 1), Position(self.fn, self.src, 8, 1))).value)
 
 if __name__ == "__main__":
-    program = Program()
+    program = Program("files/main.flu", "3 / 0.5")
     program.main()

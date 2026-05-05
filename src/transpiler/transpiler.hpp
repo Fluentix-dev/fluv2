@@ -3,10 +3,12 @@
 
 struct Transpiler {
 public:
-    Transpiler(const std::shared_ptr<BlockStatement> &ast);
+    Transpiler(const std::string &fn, const std::string &src, const std::shared_ptr<BlockStatement> &ast);
     std::string transpile();
 private:
     std::shared_ptr<BlockStatement> ast;
+    std::string fn;
+    std::string src;
     std::string block(const std::shared_ptr<BlockStatement> &block, const size_t indentation);
     std::string expression(const std::shared_ptr<ExpressionStatement> &expression, size_t indentation);
     std::string expression_(const std::shared_ptr<Expression> &expression);
