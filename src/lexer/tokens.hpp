@@ -13,6 +13,7 @@ enum struct TokenType {
     Int,
     Float,
     Identifier,
+    Newline,
     Variable,
     Let,
     Constant,

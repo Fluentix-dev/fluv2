@@ -21,5 +21,17 @@ Flu is a programming language that the Fluentix community is trying to revive
 - Error `#11`: Cannot multiply an `int` to a non-number. Classified as a Type Error
 - Error `#12`: Cannot divide an `int` to a non-number. Classified as a Type Error
 - Error `#13`: Value literal for `int` is overflowed. Classified as an Overflow Error
-- Error `#14`: Division by 0 where the dividend is an `int`
-- Error `#15`: Division by 0 where the dividend is a `float`
+- Error `#14`: Division by 0 where the dividend is an `int`. Classified as a Math Error
+- Error `#15`: Division by 0 where the dividend is a `float`. Classified as a Math Error
+- Error `#16`: Expecting a variable name in the declaration `variable <var_name> is <assigned_val>`. Classified as a Syntax Error
+- Error `#17`: Expecting `is` in the declaration `variable <var_name> is <assigned_val>`. Classified as a Syntax Error
+- Error `#18`: Expecting a variable name in the declaration `let <var_name> be <assigned_val>`. Classified as a Syntax Error
+- Error `#19`: Expecting `be` in the declaration `let <var_name> be <assigned_val>`. Classified as a Syntax Error
+- Error `#20`: Expecting a variable name in the declaration `constant <var_name> is <assigned_val>`. Classified as a Syntax Error
+- Error `#21`: Expecting `is` in the declaration `constant <var_name> is <assigned_val>`. Classified as a Syntax Error
+- Error `#22`: Expecting a newline at the end of each statement. Classified as a Syntax Error
+- Error `#23`: Cannot redeclare a variable. Classified as a Variable Error
+- Error `#24`: Cannot assign to a variable that isn't already declared/existed. Classified as a Variable Error
+- Error `#25`: Cannot assign to a constant variable. Classified as a Variable Error
+- Error `#26`: Cannot get a variable that does not exist. Classfied as a Variable Error
+- Error `#27`: Assignment gone wrong. Classified as a Syntax Error

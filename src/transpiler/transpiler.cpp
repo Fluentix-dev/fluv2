@@ -29,6 +29,20 @@ std::string Transpiler::block(const std::shared_ptr<BlockStatement> &block, cons
             returned += "\n";
             continue;
         }
+
+        if (statement->type == StatementType::VariableDeclaration) {
+            std::shared_ptr<VariableDeclarationStatement> variable_declaration = std::static_pointer_cast<VariableDeclarationStatement>(statement);
+            returned += this->variable_declaration(variable_declaration, indentation);
+            returned += "\n";
+            continue;
+        }
+
+        if (statement->type == StatementType::Assignment) {
+            std::shared_ptr<AssignmentStatement> assignment = std::static_pointer_cast<AssignmentStatement>(statement);
+            returned += this->assignment(assignment, indentation);
+            returned += "\n";
+            continue;
+        }
     }
 
     return returned;
@@ -37,6 +51,21 @@ std::string Transpiler::block(const std::shared_ptr<BlockStatement> &block, cons
 std::string Transpiler::expression(const std::shared_ptr<ExpressionStatement> &expression, const size_t indentation) {
     std::string indents = generate_indentation(indentation);
     return indents + "print(" + this->expression_(expression->expression) + ".value)";
+}
+
+std::string Transpiler::variable_declaration(const std::shared_ptr<VariableDeclarationStatement> &variable_declaration, const size_t indentation) {
+    std::string indents = generate_indentation(indentation);
+    return indents + "self.scope.declare(" + generate_boolean(variable_declaration->is_constant) + ", " + convert_to_code_string(variable_declaration->variable_name) + ", " + this->expression_(variable_declaration->value) + ", " + generate_position(variable_declaration->start) + ", " + generate_position(variable_declaration->end) + ")";
+}
+
+std::string Transpiler::assignment(const std::shared_ptr<AssignmentStatement> &assignment, const size_t indentation) {
+    std::string indents = generate_indentation(indentation);
+    if (assignment->assigner->type == ExpressionType::Identifier) {
+        std::shared_ptr<IdentifierExpression> variable = std::static_pointer_cast<IdentifierExpression>(assignment->assigner);
+        return indents + "self.scope.assign(" + convert_to_code_string(variable->identifier) + ", " + this->expression_(assignment->value) + ", " + generate_position(assignment->start) + ", " + generate_position(assignment->end) + ")";
+    }
+
+    return "";
 }
 
 std::string Transpiler::expression_(const std::shared_ptr<Expression> &expression) {
@@ -58,6 +87,11 @@ std::string Transpiler::expression_(const std::shared_ptr<Expression> &expressio
     if (expression->type == ExpressionType::FloatLiteral) {
         std::shared_ptr<FloatExpression> float_ = std::static_pointer_cast<FloatExpression>(expression);
         return this->float_(float_);
+    }
+
+    if (expression->type == ExpressionType::Identifier) {
+        std::shared_ptr<IdentifierExpression> identifier = std::static_pointer_cast<IdentifierExpression>(expression);
+        return this->identifier(identifier);
     }
 
     if (expression->type == ExpressionType::Group) {
@@ -103,6 +137,10 @@ std::string Transpiler::float_(const std::shared_ptr<FloatExpression> &float_) {
     return "verifier.verify_float(\"" + float_->literal + "\", " + generate_position(float_->start) + ", " + generate_position(float_->end) + ")";
 }
 
+std::string Transpiler::identifier(const std::shared_ptr<IdentifierExpression> &identifier) {
+    return "self.scope.get(" + convert_to_code_string(identifier->identifier) + ", " + generate_position(identifier->start) + ", " + generate_position(identifier->end) + ")";
+}
+
 std::string Transpiler::group(const std::shared_ptr<GroupExpression> &group) {
-    return this->expression_(group->inside);
+    return this->expression_(group->inside) + ".set_position(" + generate_position(group->start) + ", " + generate_position(group->end) + ")";
 }

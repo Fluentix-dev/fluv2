@@ -11,6 +11,8 @@ private:
     std::string src;
     std::string block(const std::shared_ptr<BlockStatement> &block, const size_t indentation);
     std::string expression(const std::shared_ptr<ExpressionStatement> &expression, size_t indentation);
+    std::string variable_declaration(const std::shared_ptr<VariableDeclarationStatement> &variable_declaration, size_t indentation);
+    std::string assignment(const std::shared_ptr<AssignmentStatement> &assignment, size_t indentation);
     std::string expression_(const std::shared_ptr<Expression> &expression);
     std::string binary(const std::shared_ptr<BinaryExpression> &binary);
     std::string unary(const std::shared_ptr<UnaryExpression> &unary);

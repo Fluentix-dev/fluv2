@@ -4,7 +4,9 @@
 
 enum struct StatementType {
     Block,
-    Expression
+    Expression,
+    VariableDeclaration,
+    Assignment
 };
 
 struct Statement {
@@ -23,6 +25,21 @@ struct BlockStatement : public Statement {
 struct ExpressionStatement : public Statement {
     std::shared_ptr<Expression> expression;
     ExpressionStatement(const std::shared_ptr<Expression> &expression, const Position &start, const Position &end);
+};
+
+struct VariableDeclarationStatement : public Statement {
+    bool is_constant;
+    std::string variable_name;
+    std::shared_ptr<Expression> value;
+
+    VariableDeclarationStatement(const bool is_constant, const std::string &variable_name, const std::shared_ptr<Expression> &value, const Position &start, const Position &end);
+};
+
+struct AssignmentStatement : public Statement {
+    std::shared_ptr<Expression> assigner;
+    std::shared_ptr<Expression> value;
+
+    AssignmentStatement(const std::shared_ptr<Expression> &assigner, const std::shared_ptr<Expression> &value, const Position &start, const Position &end);
 };
 
 struct StatementResult {

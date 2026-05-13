@@ -54,8 +54,15 @@ LexerResult Lexer::tokenize() {
 
     std::vector<Token> tokens = {};
     while (this->current_char != '\0') {
-        if (this->current_char == ' ' || this->current_char == '\n' || this->current_char == '\t') {
+        if (this->current_char == ' ' || this->current_char == '\t') {
             this->advance();
+            continue;
+        }
+
+        if (this->current_char == '\n') {
+            Position start = this->position;
+            this->advance();
+            tokens.push_back(Token(TokenType::Newline, "\\n", start, this->position));
             continue;
         }
 

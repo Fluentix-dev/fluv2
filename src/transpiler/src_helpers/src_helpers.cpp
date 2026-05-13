@@ -46,3 +46,7 @@ if __name__ == "__main__":
     program = Program()" + new_fn + ", " + new_src + R"()
     program.main())";
 }
+
+std::string generate_boolean(const bool value) {
+    return (value ? "True" : "False");
+}

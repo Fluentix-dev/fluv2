@@ -83,6 +83,14 @@ class RuntimeValue:
         self.start = start
         self.end = end
     
+    def set_position(self, start: Position, end: Position) -> RuntimeValue:
+        """
+        Resets the position of something and returns itself
+        """
+        self.start = start
+        self.end = end
+        return self
+
     def add(self, other: RuntimeValue) -> RuntimeValue:
         """
         Addition
@@ -260,6 +268,53 @@ class Float(RuntimeValue):
         """
         return Float(-self.value, start, self.end)
 
+class Scope:
+    """
+    A scope where all variables are stored
+    """
+    def __init__(self, parent: Scope | None = None) -> None:
+        self.parent = parent
+        self.variables: dict[str, RuntimeValue] = {}
+        self.constants: set[str] = set()
+    
+    def declare(self, is_constant: bool, variable_name: str, value: RuntimeValue, start: Position, end: Position) -> None:
+        if variable_name in self.variables:
+            error: Error = Error("Variable Error", f"'{variable_name}' is already in the scope, cannot redeclare '{variable_name}'", 23, start, end)
+            error.print()
+        
+        self.variables[variable_name] = value
+        if is_constant:
+            self.constants.add(variable_name)
+    
+    def assign(self, variable_name: str, value: RuntimeValue, start: Position, end: Position) -> None:
+        scope = self.get_scope_from_variable(variable_name)
+        if scope is None:
+            error: Error = Error("Variable Error", f"'{variable_name}' does not exist, thus cannot be reassigned", 24, start, end)
+            error.print()
+
+        if variable_name in scope.constants:
+            error: Error = Error("Variable Error", f"'{variable_name}' is a constant, which cannot be assigned to", 25, start, end)
+            error.print()
+        
+        self.variables[variable_name] = value
+    
+    def get(self, variable_name: str, start: Position, end: Position) -> None:
+        scope = self.get_scope_from_variable(variable_name)
+        if scope is None:
+            error: Error = Error("Variable Error", f"'{variable_name}' does not exist, so their value cannot be retrieved", 26, start, end)
+            error.print()
+        
+        return scope.variables[variable_name].set_position(start, end)
+    
+    def get_scope_from_variable(self, variable_name: str) -> Scope | None:
+        if variable_name in self.variables:
+            return self
+        
+        if self.parent is None:
+            return None
+        
+        return self.parent.get_scope_from_variable(variable_name)
+
 class Verifier:
     """
     A verifier for each primitive data type
@@ -286,13 +341,23 @@ class Verifier:
 verifier = Verifier()
 
 class Program:
+    """
+    Represents the program
+    """
     def __init__(self, fn: str, src: str) -> None:
         self.fn = fn
         self.src = src
+        self.scope = Scope()
     
     def main(self) -> None:
-        print(verifier.verify_int("3", Position(self.fn, self.src, 1, 1), Position(self.fn, self.src, 2, 1)).div(verifier.verify_float("0.5", Position(self.fn, self.src, 5, 1), Position(self.fn, self.src, 8, 1))).value)
+        """
+        Your code
+        """
+        self.scope.declare(False, "a", verifier.verify_int("67", Position(self.fn, self.src, 10, 1), Position(self.fn, self.src, 12, 1)), Position(self.fn, self.src, 1, 1), Position(self.fn, self.src, 1, 2))
+        print(self.scope.get("a", Position(self.fn, self.src, 1, 2), Position(self.fn, self.src, 2, 2)).value)
+        self.scope.assign("a", verifier.verify_int("67674141", Position(self.fn, self.src, 10, 3), Position(self.fn, self.src, 18, 3)), Position(self.fn, self.src, 1, 3), Position(self.fn, self.src, 18, 3))
+        print(self.scope.get("a", Position(self.fn, self.src, 1, 4), Position(self.fn, self.src, 2, 4)).value)
 
 if __name__ == "__main__":
-    program = Program("files/main.flu", "3 / 0.5")
+    program = Program("files/main.flu", "let a be 67\na\na is now 67674141\na")
     program.main()

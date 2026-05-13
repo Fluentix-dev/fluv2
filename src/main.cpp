@@ -73,6 +73,26 @@ void print_stmt(const std::shared_ptr<Statement> &node, const size_t indentation
         print_expr(expr->expression);
         return;
     }
+
+    if (node->type == StatementType::VariableDeclaration) {
+        std::shared_ptr<VariableDeclarationStatement> variable_declaration = std::static_pointer_cast<VariableDeclarationStatement>(node);
+        if (variable_declaration->is_constant) {
+            std::cout << "constant " << variable_declaration->variable_name << " is ";
+        } else {
+            std::cout << "let " << variable_declaration->variable_name << " be ";
+        }
+
+        print_expr(variable_declaration->value);
+        return;
+    }
+
+    if (node->type == StatementType::Assignment) {
+        std::shared_ptr<AssignmentStatement> assignment = std::static_pointer_cast<AssignmentStatement>(node);
+        print_expr(assignment->assigner);
+        std::cout << " is now ";
+        print_expr(assignment->value);
+        return;
+    }
 }
 
 int main(int argc, char* argv[]) {
@@ -133,6 +153,7 @@ int main(int argc, char* argv[]) {
             return ast.error.error_code;
         }
 
+        // print_stmt(ast.node, 0);
         Transpiler transpiler = Transpiler(fn, real, std::static_pointer_cast<BlockStatement>(ast.node));
         std::string transpiled = transpiler.transpile();
 

@@ -14,6 +14,10 @@ private:
     void advance();
 
     StatementResult statement();
+    StatementResult variable_declaration();
+    StatementResult let_declaration();
+    StatementResult constant_declaration();
+    StatementResult assignment(const std::shared_ptr<Expression> &node);
     ExpressionResult expression();
     ExpressionResult additive();
     ExpressionResult multiplicative();
