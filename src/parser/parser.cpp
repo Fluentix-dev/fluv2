@@ -32,7 +32,45 @@ StatementResult Parser::parse() {
         }
     }
 
-    return StatementResult(std::make_shared<BlockStatement>(body, tokens[0].start, this->current_token.end), Error("NULL", "", 0, this->current_token.start, this->current_token.start));
+    return StatementResult(std::make_shared<BlockStatement>(body, this->tokens[0].start, this->current_token.end), Error("NULL", "", 0, this->current_token.start, this->current_token.start));
+}
+
+StatementResult Parser::inner_block() {
+    Position start = this->current_token.start;
+    std::vector<std::shared_ptr<Statement>> stmt = {};
+    std::vector<Error> errs = {};
+
+    while (this->current_token.type == TokenType::Newline) {
+        this->advance();
+    }
+
+    this->advance();
+    while (this->current_token.type != TokenType::EndOfFile && this->current_token.type != TokenType::Dedent) {
+        while (this->current_token.type == TokenType::Newline) {
+            this->advance();
+        }
+
+        if (this->current_token.type == TokenType::EndOfFile) {
+            break;
+        }
+
+        if (this->current_token.type == TokenType::Dedent) {
+            break;
+        }
+        
+        StatementResult sr = this->statement();
+        if (sr.error.type != "NULL") {
+            return sr;
+        }
+
+        stmt.push_back(sr.node);
+    }
+
+    Position end = this->current_token.end;
+    this->advance();
+
+    std::shared_ptr<BlockStatement> returned = std::make_shared<BlockStatement>(BlockStatement(stmt, start, end));
+    return StatementResult(returned, Error("NULL", "", 0, this->current_token.start, this->current_token.start));
 }
 
 StatementResult Parser::statement() {
@@ -46,6 +84,10 @@ StatementResult Parser::statement() {
 
     if (this->current_token.type == TokenType::Constant) {
         return this->constant_declaration();
+    }
+
+    if (this->current_token.type == TokenType::If) {
+        return this->if_unless_else();
     }
 
     ExpressionResult expression = this->expression();
@@ -149,6 +191,82 @@ StatementResult Parser::assignment(const std::shared_ptr<Expression> &node) {
     }
 
     return StatementResult(nullptr, Error("Syntax Error", "invalid syntax!", 27, node->start, node->end));
+}
+
+StatementResult Parser::if_unless_else() {
+    Position start = this->current_token.start;
+    this->advance();
+
+    ExpressionResult condition = this->expression();
+    if (condition.error.type != "NULL") {
+        return StatementResult(nullptr, condition.error);
+    }
+
+    if (this->current_token.type != TokenType::Then) {
+        return StatementResult(nullptr, Error("Syntax Error", "expected 'then' in if unless else statement", 28, this->current_token.start, this->current_token.end));
+    }
+
+    this->advance();
+    StatementResult body = StatementResult(nullptr, Error("NULL", "", 0, this->current_token.start, this->current_token.start));
+    if (this->current_token.type == TokenType::Newline) {
+        body = this->inner_block();
+        if (body.error.type != "NULL") {
+            return body;
+        }
+    } else {
+        body = this->statement();
+        if (body.error.type != "NULL") {
+            return body;
+        }
+
+        std::vector<std::shared_ptr<Statement>> block = {body.node};
+        body.node = std::make_shared<BlockStatement>(block, body.node->start, body.node->end);
+        while (this->current_token.type == TokenType::Newline) {
+            this->advance();
+        }
+    }
+
+    if (this->current_token.type != TokenType::Unless && this->current_token.type != TokenType::Else) {
+        return StatementResult(std::make_shared<IfUnlessElseStatement>(condition.node, std::static_pointer_cast<BlockStatement>(body.node), nullptr, start, body.node->end), Error("NULL", "", 0, this->current_token.start, this->current_token.start));
+    }
+
+    if (this->current_token.type == TokenType::Unless) {
+        StatementResult chain = this->if_unless_else();
+        if (chain.error.type != "NULL") {
+            return chain;
+        }
+
+        return StatementResult(std::make_shared<IfUnlessElseStatement>(condition.node, std::static_pointer_cast<BlockStatement>(body.node), std::static_pointer_cast<IfUnlessElseStatement>(chain.node), start, chain.node->end), Error("NULL", "", 0, this->current_token.start, this->current_token.start));
+    }
+
+    Position else_start = this->current_token.start;
+    this->advance();
+    if (this->current_token.type != TokenType::Then) {
+        return StatementResult(nullptr, Error("Syntax Error", "expected 'then' in if unless else statement", 30, this->current_token.start, this->current_token.end));
+    }
+
+    this->advance();
+    StatementResult else_body = StatementResult(nullptr, Error("NULL", "", 0, this->current_token.start, this->current_token.start));
+    if (this->current_token.type == TokenType::Newline) {
+        else_body = this->inner_block();
+        if (else_body.error.type != "NULL") {
+            return else_body;
+        }
+    } else {
+        else_body = this->statement();
+        if (else_body.error.type != "NULL") {
+            return else_body;
+        }
+
+        std::vector<std::shared_ptr<Statement>> block = {else_body.node};
+        else_body.node = std::make_shared<BlockStatement>(block, else_body.node->start, else_body.node->end);
+        while (this->current_token.type == TokenType::Newline) {
+            this->advance();
+        }
+    }
+
+    std::string true_identifier = "true";
+    return StatementResult(std::make_shared<IfUnlessElseStatement>(condition.node, std::static_pointer_cast<BlockStatement>(body.node), std::make_shared<IfUnlessElseStatement>(std::make_shared<IdentifierExpression>(true_identifier, this->current_token.start, this->current_token.start), std::static_pointer_cast<BlockStatement>(else_body.node), nullptr, else_start, else_body.node->end), start, else_body.node->end), Error("NULL", "", 0, this->current_token.start, this->current_token.end));
 }
 
 ExpressionResult Parser::expression() {

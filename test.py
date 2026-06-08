@@ -118,6 +118,12 @@ class RuntimeValue:
         """
         error: Error = Error("Type Error", f"cannot divide '{self.type}' to '{other.type}'", 8, self.start, other.end)
         error.print()
+    
+    def is_true(self) -> bool:
+        """
+        Returns if a value is considered a truthy or a falsy value
+        """
+        return True
 
 class Int(RuntimeValue):
     """
@@ -199,6 +205,12 @@ class Int(RuntimeValue):
         Unary subtraction on int
         """
         return Int(-self.value, start, self.end)
+    
+    def is_true(self) -> RuntimeValue:
+        """
+        Returns if an integer is truthy or falsy
+        """
+        return self.value != 0
 
 class Float(RuntimeValue):
     """
@@ -267,6 +279,12 @@ class Float(RuntimeValue):
         Unary subtraction on float
         """
         return Float(-self.value, start, self.end)
+    
+    def is_true(self) -> bool:
+        """
+        Returns if a float is truthy or falsy
+        """
+        return self.value != 0
 
 class Scope:
     """
@@ -276,7 +294,14 @@ class Scope:
         self.parent = parent
         self.variables: dict[str, RuntimeValue] = {}
         self.constants: set[str] = set()
-    
+
+        if self.parent is None:
+            self.variables["true"] = Int(1, Position("", "", 0, 0), Position("", "", 0, 0))
+            self.constants.add("true")
+
+            self.variables["false"] = Int(0, Position("", "", 0, 0), Position("", "", 0, 0))
+            self.constants.add("false")
+
     def declare(self, is_constant: bool, variable_name: str, value: RuntimeValue, start: Position, end: Position) -> None:
         if variable_name in self.variables:
             error: Error = Error("Variable Error", f"'{variable_name}' is already in the scope, cannot redeclare '{variable_name}'", 23, start, end)
@@ -353,11 +378,21 @@ class Program:
         """
         Your code
         """
-        self.scope.declare(False, "a", verifier.verify_int("67", Position(self.fn, self.src, 10, 1), Position(self.fn, self.src, 12, 1)), Position(self.fn, self.src, 1, 1), Position(self.fn, self.src, 1, 2))
-        print(self.scope.get("a", Position(self.fn, self.src, 1, 2), Position(self.fn, self.src, 2, 2)).value)
-        self.scope.assign("a", verifier.verify_int("67674141", Position(self.fn, self.src, 10, 3), Position(self.fn, self.src, 18, 3)), Position(self.fn, self.src, 1, 3), Position(self.fn, self.src, 18, 3))
-        print(self.scope.get("a", Position(self.fn, self.src, 1, 4), Position(self.fn, self.src, 2, 4)).value)
+        if verifier.verify_int("0", Position(self.fn, self.src, 4, 1), Position(self.fn, self.src, 5, 1)).is_true():
+            print(verifier.verify_int("1", Position(self.fn, self.src, 11, 1), Position(self.fn, self.src, 12, 1)).value)
+        else:
+            if verifier.verify_int("0", Position(self.fn, self.src, 8, 2), Position(self.fn, self.src, 9, 2)).is_true():
+                print(verifier.verify_int("2", Position(self.fn, self.src, 15, 2), Position(self.fn, self.src, 16, 2)).value)
+            else:
+                if self.scope.get("true", Position(self.fn, self.src, 10, 7), Position(self.fn, self.src, 10, 7)).is_true():
+                    if self.scope.get("true", Position(self.fn, self.src, 8, 4), Position(self.fn, self.src, 12, 4)).is_true():
+                        print(verifier.verify_int("3", Position(self.fn, self.src, 9, 5), Position(self.fn, self.src, 10, 5)).value)
+                    else:
+                        if self.scope.get("true", Position(self.fn, self.src, 11, 7), Position(self.fn, self.src, 11, 7)).is_true():
+                            print(verifier.verify_int("4", Position(self.fn, self.src, 9, 7), Position(self.fn, self.src, 10, 7)).value)
+
+
 
 if __name__ == "__main__":
-    program = Program("files/main.flu", "let a be 67\na\na is now 67674141\na")
+    program = Program("files/main.flu", "if 0 then 1\nunless 0 then 2\nelse then\n    if true then\n        3\n    else then\n        4")
     program.main()

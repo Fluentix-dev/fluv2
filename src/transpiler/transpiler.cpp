@@ -43,6 +43,13 @@ std::string Transpiler::block(const std::shared_ptr<BlockStatement> &block, cons
             returned += "\n";
             continue;
         }
+
+        if (statement->type == StatementType::IfUnlessElse) {
+            std::shared_ptr<IfUnlessElseStatement> if_unless_else = std::static_pointer_cast<IfUnlessElseStatement>(statement);
+            returned += this->if_unless_else(if_unless_else, indentation);
+            returned += "\n";
+            continue;
+        }
     }
 
     return returned;
@@ -66,6 +73,16 @@ std::string Transpiler::assignment(const std::shared_ptr<AssignmentStatement> &a
     }
 
     return "";
+}
+
+std::string Transpiler::if_unless_else(const std::shared_ptr<IfUnlessElseStatement> &if_unless_else, size_t indentation) {
+    std::string indents = generate_indentation(indentation);
+    std::string returned = "if " + this->expression_(if_unless_else->condition) + ".is_true():\n" + this->block(if_unless_else->body, indentation+1);
+    if (if_unless_else->next == nullptr) {
+        return indents + returned;
+    }
+
+    return indents + returned + indents + "else:\n" + this->if_unless_else(if_unless_else->next, indentation+1);
 }
 
 std::string Transpiler::expression_(const std::shared_ptr<Expression> &expression) {

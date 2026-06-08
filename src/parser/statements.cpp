@@ -6,5 +6,6 @@ BlockStatement::BlockStatement(const std::vector<std::shared_ptr<Statement>> &bo
 ExpressionStatement::ExpressionStatement(const std::shared_ptr<Expression> &expression, const Position &start, const Position &end) : expression(expression), Statement(StatementType::Expression, start, end) {}
 VariableDeclarationStatement::VariableDeclarationStatement(const bool is_constant, const std::string &variable_name, const std::shared_ptr<Expression> &value, const Position &start, const Position &end) : is_constant(is_constant), variable_name(variable_name), value(value), Statement(StatementType::VariableDeclaration, start, end) {}
 AssignmentStatement::AssignmentStatement(const std::shared_ptr<Expression> &assigner, const std::shared_ptr<Expression> &value, const Position &start, const Position &end) : assigner(assigner), value(value), Statement(StatementType::Assignment, start, end) {}
+IfUnlessElseStatement::IfUnlessElseStatement(const std::shared_ptr<Expression> &condition, const std::shared_ptr<BlockStatement> &body, const std::shared_ptr<IfUnlessElseStatement> next, const Position &start, const Position &end) : condition(condition), body(body), next(next), Statement(StatementType::IfUnlessElse, start, end) {}
 
 StatementResult::StatementResult(const std::shared_ptr<Statement> &node, const Error error) : node(node), error(error) {}

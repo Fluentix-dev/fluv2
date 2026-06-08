@@ -35,3 +35,6 @@ Flu is a programming language that the Fluentix community is trying to revive
 - Error `#25`: Cannot assign to a constant variable. Classified as a Variable Error
 - Error `#26`: Cannot get a variable that does not exist. Classfied as a Variable Error
 - Error `#27`: Assignment gone wrong. Classified as a Syntax Error
+- Error `#28`: Expected `then` in if statement `if <condition> then` or `unless <condition> then`. Classified as a Syntax Error
+- Error `#29`: Unindent does not match any outer indentation level. Classified as a Syntax Error
+- Error `#30`: Expected `then` in if statement `else then`. Classified as a Syntax Error

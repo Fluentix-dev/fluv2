@@ -122,6 +122,12 @@ class RuntimeValue:
         """
         error: Error = Error("Type Error", f"cannot divide '{self.type}' to '{other.type}'", 8, self.start, other.end)
         error.print()
+    
+    def is_true(self) -> bool:
+        """
+        Returns if a value is considered a truthy or a falsy value
+        """
+        return True
 
 class Int(RuntimeValue):
     """
@@ -203,6 +209,12 @@ class Int(RuntimeValue):
         Unary subtraction on int
         """
         return Int(-self.value, start, self.end)
+    
+    def is_true(self) -> RuntimeValue:
+        """
+        Returns if an integer is truthy or falsy
+        """
+        return self.value != 0
 
 class Float(RuntimeValue):
     """
@@ -271,6 +283,12 @@ class Float(RuntimeValue):
         Unary subtraction on float
         """
         return Float(-self.value, start, self.end)
+    
+    def is_true(self) -> bool:
+        """
+        Returns if a float is truthy or falsy
+        """
+        return self.value != 0
 
 class Scope:
     """
@@ -280,7 +298,14 @@ class Scope:
         self.parent = parent
         self.variables: dict[str, RuntimeValue] = {}
         self.constants: set[str] = set()
-    
+
+        if self.parent is None:
+            self.variables["true"] = Int(1, Position("", "", 0, 0), Position("", "", 0, 0))
+            self.constants.add("true")
+
+            self.variables["false"] = Int(0, Position("", "", 0, 0), Position("", "", 0, 0))
+            self.constants.add("false")
+
     def declare(self, is_constant: bool, variable_name: str, value: RuntimeValue, start: Position, end: Position) -> None:
         if variable_name in self.variables:
             error: Error = Error("Variable Error", f"'{variable_name}' is already in the scope, cannot redeclare '{variable_name}'", 23, start, end)

@@ -93,6 +93,26 @@ void print_stmt(const std::shared_ptr<Statement> &node, const size_t indentation
         print_expr(assignment->value);
         return;
     }
+
+    if (node->type == StatementType::IfUnlessElse) {
+        std::shared_ptr<IfUnlessElseStatement> if_unless_else = std::static_pointer_cast<IfUnlessElseStatement>(node);
+        std::cout << "IF ";
+        print_expr(if_unless_else->condition);
+        std::cout << " THEN\n";
+        print_stmt(if_unless_else->body, indentation+1);
+        if (if_unless_else->next == nullptr) {
+            return;
+        }
+
+        std::cout << "\n";
+        for (size_t i = 0; i < indentation; i++) {
+            std::cout << "    ";
+        }
+
+        std::cout << "ELSE ";
+        print_stmt(if_unless_else->next, indentation);
+        return;
+    }
 }
 
 int main(int argc, char* argv[]) {

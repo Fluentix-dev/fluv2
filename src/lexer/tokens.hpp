@@ -20,8 +20,6 @@ enum struct TokenType {
     Is,
     Be,
     Now,
-    True,
-    False,
     Null,
     Get,
     Module,
@@ -40,7 +38,10 @@ enum struct TokenType {
     Exclude,
     From,
     Element,
-    At
+    At,
+    Indent,
+    Dedent,
+    Then
 };
 
 struct Token {

@@ -6,7 +6,8 @@ enum struct StatementType {
     Block,
     Expression,
     VariableDeclaration,
-    Assignment
+    Assignment,
+    IfUnlessElse
 };
 
 struct Statement {
@@ -40,6 +41,14 @@ struct AssignmentStatement : public Statement {
     std::shared_ptr<Expression> value;
 
     AssignmentStatement(const std::shared_ptr<Expression> &assigner, const std::shared_ptr<Expression> &value, const Position &start, const Position &end);
+};
+
+struct IfUnlessElseStatement : public Statement {
+    std::shared_ptr<Expression> condition;
+    std::shared_ptr<BlockStatement> body;
+    std::shared_ptr<IfUnlessElseStatement> next;
+
+    IfUnlessElseStatement(const std::shared_ptr<Expression> &condition, const std::shared_ptr<BlockStatement> &body, const std::shared_ptr<IfUnlessElseStatement> next, const Position &start, const Position &end);
 };
 
 struct StatementResult {
