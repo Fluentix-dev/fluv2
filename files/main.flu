@@ -1,7 +1,7 @@
-if 0 then 1
-unless 0 then 2
-else then
+if 0 then 1 unless 0 then 2 else then
     if true then
         3
     else then
         4
+
+5

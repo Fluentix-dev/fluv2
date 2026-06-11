@@ -1,6 +1,10 @@
 #include "parser.hpp"
 #include <iostream>
 
+bool statement_requires_newline(const std::shared_ptr<Statement> &stmt) {
+    return stmt->type != StatementType::IfUnlessElse;
+}
+
 Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens), index(-1), current_token(tokens[0]) {
     this->advance();
 }
@@ -27,7 +31,7 @@ StatementResult Parser::parse() {
         }
 
         body.push_back(statement.node);
-        if (this->current_token.type != TokenType::Newline && this->current_token.type != TokenType::EndOfFile) {
+        if (statement_requires_newline(statement.node) && this->current_token.type != TokenType::Newline && this->current_token.type != TokenType::EndOfFile) {
             return StatementResult(nullptr, Error("Syntax Error", "expected a newline at the end of statement", 22, this->current_token.start, this->current_token.end));
         }
     }

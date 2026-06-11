@@ -2,6 +2,8 @@
 #include "statements.hpp"
 #include "../lexer/tokens.hpp"
 
+bool statement_requires_newline(const std::shared_ptr<Statement> &stmt);
+
 struct Parser {
 public:
     Parser(const std::vector<Token> &tokens);

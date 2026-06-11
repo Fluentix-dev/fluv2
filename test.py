@@ -137,12 +137,12 @@ class Int(RuntimeValue):
         """
         Int addition
         """
-        if other.type not in ("int", "float"):
+        if other.type not in ("int", "float", "boolean"):
             error: Error = Error("Type Error", f"cannot add '{self.type}' to '{other.type}'", 9, self.start, other.end)
             error.print()
         
         result = self.value + other.value
-        if other.type == "int":
+        if other.type in ("int", "boolean"):
             return Int(result, self.start, other.end)
         
         return Float(result, self.start, self.end)
@@ -151,12 +151,12 @@ class Int(RuntimeValue):
         """
         Int subtraction
         """
-        if other.type not in ("int",):
+        if other.type not in ("int", "float", "boolean"):
             error: Error = Error("Type Error", f"cannot subtract '{self.type}' to '{other.type}'", 10, self.start, other.end)
             error.print()
         
         result = self.value - other.value
-        if other.type == "int":
+        if other.type in ("int", "boolean"):
             return Int(result, self.start, other.end)
         
         return Float(result, self.start, other.end)
@@ -165,12 +165,12 @@ class Int(RuntimeValue):
         """
         Int multiplication
         """
-        if other.type not in ("int",):
+        if other.type not in ("int", "float", "boolean"):
             error: Error = Error("Type Error", f"cannot multiply '{self.type}' to '{other.type}'", 11, self.start, other.end)
             error.print()
         
         result = self.value * other.value
-        if other.type == "int":
+        if other.type in ("int", "boolean"):
             return Int(result, self.start, other.end)
         
         return Float(result, self.start, other.end)
@@ -179,7 +179,7 @@ class Int(RuntimeValue):
         """
         Int division
         """
-        if other.type not in ("int", "float"):
+        if other.type not in ("int", "float", "boolean"):
             error: Error = Error("Type Error", f"cannot divide '{self.type}' to '{other.type}'", 12, self.start, other.end)
             error.print()
         
@@ -187,7 +187,7 @@ class Int(RuntimeValue):
             error: Error = Error("Math Error", "division by 0", 14, self.start, other.end)
             error.print()
         
-        if other.type == "int":
+        if other.type in ("int", "boolean"):
             result = self.value // other.value
             return Int(result, self.start, other.end)
         
@@ -224,7 +224,7 @@ class Float(RuntimeValue):
         """
         Float addition
         """
-        if other.type not in ("int", "float"):
+        if other.type not in ("int", "float", "boolean"):
             error: Error = Error("Type Error", f"cannot add '{self.type}' to '{other.type}'", 9, self.start, other.end)
             error.print()
         
@@ -235,7 +235,7 @@ class Float(RuntimeValue):
         """
         Float subtraction
         """
-        if other.type not in ("int", "float"):
+        if other.type not in ("int", "float", "boolean"):
             error: Error = Error("Type Error", f"cannot subtract '{self.type}' to '{other.type}'", 10, self.start, other.end)
             error.print()
         
@@ -246,7 +246,7 @@ class Float(RuntimeValue):
         """
         Float multiplication
         """
-        if other.type not in ("int", "float"):
+        if other.type not in ("int", "float", "boolean"):
             error: Error = Error("Type Error", f"cannot multiply '{self.type}' to '{other.type}'", 11, self.start, other.end)
             error.print()
         
@@ -257,7 +257,7 @@ class Float(RuntimeValue):
         """
         Float division
         """
-        if other.type not in ("int", "float"):
+        if other.type not in ("int", "float", "boolean"):
             error: Error = Error("Type Error", f"cannot divide '{self.type}' to '{other.type}'", 12, self.start, other.end)
             error.print()
         
@@ -286,6 +286,93 @@ class Float(RuntimeValue):
         """
         return self.value != 0
 
+class Boolean(RuntimeValue):
+    """
+    Represents a boolean
+    """
+    def __init__(self, value: bool, start: Position, end: Position) -> None:
+        super().__init__("boolean", start, end)
+        self.value = value
+    
+    def add(self, other: RuntimeValue) -> RuntimeValue:
+        """
+        Boolean addition
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot add '{self.type}' to '{other.type}'", 9, self.start, other.end)
+            error.print()
+        
+        result = self.value + other.value
+        if other.type in ("int", "boolean"):
+            return Int(result, self.start, other.end)
+        
+        return Float(result, self.start, self.end)
+    
+    def sub(self, other: RuntimeValue) -> RuntimeValue:
+        """
+        Boolean subtraction
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot subtract '{self.type}' to '{other.type}'", 10, self.start, other.end)
+            error.print()
+        
+        result = self.value - other.value
+        if other.type in ("int", "boolean"):
+            return Int(result, self.start, other.end)
+        
+        return Float(result, self.start, other.end)
+    
+    def mul(self, other: RuntimeValue) -> RuntimeValue:
+        """
+        Boolean multiplication
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot multiply '{self.type}' to '{other.type}'", 11, self.start, other.end)
+            error.print()
+        
+        result = self.value * other.value
+        if other.type in ("int", "boolean"):
+            return Int(result, self.start, other.end)
+        
+        return Float(result, self.start, other.end)
+    
+    def div(self, other: RuntimeValue) -> RuntimeValue:
+        """
+        Boolean division
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot divide '{self.type}' to '{other.type}'", 12, self.start, other.end)
+            error.print()
+        
+        if other.value == 0:
+            error: Error = Error("Math Error", "division by 0", 14, self.start, other.end)
+            error.print()
+        
+        if other.type in ("int", "boolean"):
+            result = self.value // other.value
+            return Int(result, self.start, other.end)
+        
+        result = self.value / other.value
+        return Float(result, self.start, other.end)
+    
+    def positive(self, start: Position) -> RuntimeValue:
+        """
+        Unary plus on Boolean
+        """
+        return Int(self.value, start, self.end)
+    
+    def negative(self, start: Position) -> RuntimeValue:
+        """
+        Unary subtraction on Boolean
+        """
+        return Int(-self.value, start, self.end)
+    
+    def is_true(self) -> RuntimeValue:
+        """
+        Returns if a boolean is truthy or falsy
+        """
+        return self.value
+
 class Scope:
     """
     A scope where all variables are stored
@@ -296,10 +383,10 @@ class Scope:
         self.constants: set[str] = set()
 
         if self.parent is None:
-            self.variables["true"] = Int(1, Position("", "", 0, 0), Position("", "", 0, 0))
+            self.variables["true"] = Boolean(True, Position("", "", 0, 0), Position("", "", 0, 0))
             self.constants.add("true")
 
-            self.variables["false"] = Int(0, Position("", "", 0, 0), Position("", "", 0, 0))
+            self.variables["false"] = Boolean(False, Position("", "", 0, 0), Position("", "", 0, 0))
             self.constants.add("false")
 
     def declare(self, is_constant: bool, variable_name: str, value: RuntimeValue, start: Position, end: Position) -> None:
@@ -381,18 +468,17 @@ class Program:
         if verifier.verify_int("0", Position(self.fn, self.src, 4, 1), Position(self.fn, self.src, 5, 1)).is_true():
             print(verifier.verify_int("1", Position(self.fn, self.src, 11, 1), Position(self.fn, self.src, 12, 1)).value)
         else:
-            if verifier.verify_int("0", Position(self.fn, self.src, 8, 2), Position(self.fn, self.src, 9, 2)).is_true():
-                print(verifier.verify_int("2", Position(self.fn, self.src, 15, 2), Position(self.fn, self.src, 16, 2)).value)
+            if verifier.verify_int("0", Position(self.fn, self.src, 20, 1), Position(self.fn, self.src, 21, 1)).is_true():
+                print(verifier.verify_int("2", Position(self.fn, self.src, 27, 1), Position(self.fn, self.src, 28, 1)).value)
             else:
-                if self.scope.get("true", Position(self.fn, self.src, 10, 7), Position(self.fn, self.src, 10, 7)).is_true():
-                    if self.scope.get("true", Position(self.fn, self.src, 8, 4), Position(self.fn, self.src, 12, 4)).is_true():
-                        print(verifier.verify_int("3", Position(self.fn, self.src, 9, 5), Position(self.fn, self.src, 10, 5)).value)
+                if self.scope.get("true", Position(self.fn, self.src, 1, 7), Position(self.fn, self.src, 1, 7)).is_true():
+                    if self.scope.get("true", Position(self.fn, self.src, 8, 2), Position(self.fn, self.src, 12, 2)).is_true():
+                        print(verifier.verify_int("3", Position(self.fn, self.src, 9, 3), Position(self.fn, self.src, 10, 3)).value)
                     else:
-                        if self.scope.get("true", Position(self.fn, self.src, 11, 7), Position(self.fn, self.src, 11, 7)).is_true():
-                            print(verifier.verify_int("4", Position(self.fn, self.src, 9, 7), Position(self.fn, self.src, 10, 7)).value)
-
-
+                        if self.scope.get("true", Position(self.fn, self.src, 1, 7), Position(self.fn, self.src, 1, 7)).is_true():
+                            print(verifier.verify_int("4", Position(self.fn, self.src, 9, 5), Position(self.fn, self.src, 10, 5)).value)
+        print(verifier.verify_int("5", Position(self.fn, self.src, 1, 7), Position(self.fn, self.src, 2, 7)).value)
 
 if __name__ == "__main__":
-    program = Program("files/main.flu", "if 0 then 1\nunless 0 then 2\nelse then\n    if true then\n        3\n    else then\n        4")
+    program = Program("files/main.flu", "if 0 then 1 unless 0 then 2 else then\n    if true then\n        3\n    else then\n        4\n\n5")
     program.main()

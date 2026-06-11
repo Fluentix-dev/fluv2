@@ -1,5 +1,6 @@
 #include "transpiler.hpp"
 #include "src_helpers/src_helpers.hpp"
+#include "../parser/parser.hpp"
 
 Transpiler::Transpiler(const std::string &fn, const std::string &src, const std::shared_ptr<BlockStatement> &ast) : fn(fn), src(src), ast(ast) {}
 
@@ -19,36 +20,30 @@ std::string Transpiler::block(const std::shared_ptr<BlockStatement> &block, cons
         if (statement->type == StatementType::Block) {
             std::shared_ptr<BlockStatement> block_ = std::static_pointer_cast<BlockStatement>(statement);
             returned += this->block(block_, indentation);
-            returned += "\n";
-            continue;
         }
 
         if (statement->type == StatementType::Expression) {
             std::shared_ptr<ExpressionStatement> expression = std::static_pointer_cast<ExpressionStatement>(statement);
             returned += this->expression(expression, indentation);
-            returned += "\n";
-            continue;
         }
 
         if (statement->type == StatementType::VariableDeclaration) {
             std::shared_ptr<VariableDeclarationStatement> variable_declaration = std::static_pointer_cast<VariableDeclarationStatement>(statement);
             returned += this->variable_declaration(variable_declaration, indentation);
-            returned += "\n";
-            continue;
         }
 
         if (statement->type == StatementType::Assignment) {
             std::shared_ptr<AssignmentStatement> assignment = std::static_pointer_cast<AssignmentStatement>(statement);
             returned += this->assignment(assignment, indentation);
-            returned += "\n";
-            continue;
         }
 
         if (statement->type == StatementType::IfUnlessElse) {
             std::shared_ptr<IfUnlessElseStatement> if_unless_else = std::static_pointer_cast<IfUnlessElseStatement>(statement);
             returned += this->if_unless_else(if_unless_else, indentation);
+        }
+
+        if (statement_requires_newline(statement)) {
             returned += "\n";
-            continue;
         }
     }
 
