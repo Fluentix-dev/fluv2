@@ -7,7 +7,8 @@ enum struct StatementType {
     Expression,
     VariableDeclaration,
     Assignment,
-    IfUnlessElse
+    IfUnlessElse,
+    Repeat
 };
 
 struct Statement {
@@ -49,6 +50,13 @@ struct IfUnlessElseStatement : public Statement {
     std::shared_ptr<IfUnlessElseStatement> next;
 
     IfUnlessElseStatement(const std::shared_ptr<Expression> &condition, const std::shared_ptr<BlockStatement> &body, const std::shared_ptr<IfUnlessElseStatement> next, const Position &start, const Position &end);
+};
+
+struct RepeatStatement : public Statement {
+    std::shared_ptr<Expression> condition;
+    std::shared_ptr<BlockStatement> body;
+
+    RepeatStatement(const std::shared_ptr<Expression> &condition, const std::shared_ptr<BlockStatement> &body, const Position &start, const Position &end);
 };
 
 struct StatementResult {

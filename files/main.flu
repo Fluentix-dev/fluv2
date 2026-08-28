@@ -1,7 +1,9 @@
-if 0 then 1 unless 0 then 2 else then
-    if true then
-        3
-    else then
-        4
+let a be 1
+let b be 2
+if a = b then
+    a
+    b
 
-5
+repeat: until a < b
+    a
+    b

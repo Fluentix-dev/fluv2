@@ -153,6 +153,58 @@ LexerResult Lexer::tokenize() {
             continue;
         }
 
+        if (this->current_char == ':') {
+            Position start = this->position;
+            this->advance();
+            tokens.push_back(Token(TokenType::Colon, ":", start, this->position));
+            continue;
+        }
+
+        if (this->current_char == '=') {
+            Position start = this->position;
+            this->advance();
+            tokens.push_back(Token(TokenType::Equal, "=", start, this->position));
+            continue;
+        }
+
+        if (this->current_char == '!') {
+            Position start = this->position;
+            this->advance();
+            if (this->current_char != '=') {
+                return LexerResult({}, Error("Syntax Error", "expected '=' after '!'", 31, start, this->position));
+            }
+
+            this->advance();
+            tokens.push_back(Token(TokenType::RParen, ")", start, this->position));
+            continue;
+        }
+
+        if (this->current_char == '>') {
+            Position start = this->position;
+            this->advance();
+            if (this->current_char != '=') {
+                tokens.push_back(Token(TokenType::Greater, ">", start, this->position));
+                continue;
+            }
+
+            this->advance();
+            tokens.push_back(Token(TokenType::GreaterThanOrEqual, ">=", start, this->position));
+            continue;
+        }
+
+        if (this->current_char == '<') {
+            Position start = this->position;
+            this->advance();
+            if (this->current_char != '=') {
+                tokens.push_back(Token(TokenType::Smaller, "<", start, this->position));
+                continue;
+            }
+
+            this->advance();
+            tokens.push_back(Token(TokenType::SmallerThanOrEqual, "<=", start, this->position));
+            continue;
+        }
+
         if (this->current_char == '.' || ('0' <= this->current_char && this->current_char <= '9')) {
             std::string number = "";
             Position start = this->position;

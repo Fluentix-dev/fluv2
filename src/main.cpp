@@ -113,6 +113,14 @@ void print_stmt(const std::shared_ptr<Statement> &node, const size_t indentation
         print_stmt(if_unless_else->next, indentation);
         return;
     }
+
+    if (node->type == StatementType::Repeat) {
+        std::shared_ptr<RepeatStatement> repeat = std::static_pointer_cast<RepeatStatement>(node);
+        std::cout << "REPEAT: UNTIL ";
+        print_expr(repeat->condition);
+        std::cout << "\n";
+        print_stmt(repeat->body, indentation+1);
+    }
 }
 
 int main(int argc, char* argv[]) {
@@ -126,7 +134,7 @@ int main(int argc, char* argv[]) {
 
     std::string command = argv[1];
     if (command == "help") {
-        std::cout << "List of commands:\n[1] flu --version: Shows the version of Flu you are currently using\n[2] flu help: Shows all commands you can use\n[3] flu conv <file_name> (in early development): Transpiles the file to Python code\n[4] flu clean: Clears the terminal\n";
+        std::cout << "List of commands:\n[1] flu --version: Shows the version of Flu you are currently using\n[2] flu help: Shows all commands you can use\n[3] flu conv <file_name> <destination_file_name> (in early development): Transpiles the file to Python code\n[4] flu clean: Clears the terminal\n";
         return 0;
     }
 

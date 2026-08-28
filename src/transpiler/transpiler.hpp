@@ -14,6 +14,7 @@ private:
     std::string variable_declaration(const std::shared_ptr<VariableDeclarationStatement> &variable_declaration, size_t indentation);
     std::string assignment(const std::shared_ptr<AssignmentStatement> &assignment, size_t indentation);
     std::string if_unless_else(const std::shared_ptr<IfUnlessElseStatement> &if_unless_else, size_t indentation);
+    std::string repeat(const std::shared_ptr<RepeatStatement> &repeat, size_t indentation);
     std::string expression_(const std::shared_ptr<Expression> &expression);
     std::string binary(const std::shared_ptr<BinaryExpression> &binary);
     std::string unary(const std::shared_ptr<UnaryExpression> &unary);

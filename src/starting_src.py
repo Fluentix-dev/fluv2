@@ -125,6 +125,48 @@ class RuntimeValue:
         """
         return True
 
+    def equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Equality
+        """
+        error: Error = Error("Type Error", f"cannot check equality for '{self.type}' to '{other.type}'", 34, self.start, other.end)
+        error.print()
+
+    def not_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Inequality
+        """
+        error: Error = Error("Type Error", f"cannot check inequality for '{self.type}' to '{other.type}'", 35, self.start, other.end)
+        error.print()
+
+    def greater_than(self, other: RuntimeValue) -> Boolean:
+        """
+        Greater than
+        """
+        error: Error = Error("Type Error", f"cannot perform operation '>' on '{self.type}' and '{other.type}'", 36, self.start, other.end)
+        error.print()
+
+    def greater_than_or_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Greater than or equals
+        """
+        error: Error = Error("Type Error", f"cannot perform operation '>=' on '{self.type}' and '{other.type}'", 37, self.start, other.end)
+        error.print()
+
+    def smaller_than(self, other: RuntimeValue) -> Boolean:
+        """
+        Smaller than
+        """
+        error: Error = Error("Type Error", f"cannot perform operation '<' on '{self.type}' and '{other.type}'", 38, self.start, other.end)
+        error.print()
+
+    def smaller_than_or_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Smaller than or equals
+        """
+        error: Error = Error("Type Error", f"cannot perform operation '<=' on '{self.type}' and '{other.type}'", 39, self.start, other.end)
+        error.print()
+
 class Int(RuntimeValue):
     """
     Represents an integer
@@ -206,11 +248,71 @@ class Int(RuntimeValue):
         """
         return Int(-self.value, start, self.end)
     
-    def is_true(self) -> RuntimeValue:
+    def is_true(self) -> bool:
         """
         Returns if an integer is truthy or falsy
         """
         return self.value != 0
+
+    def equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Integer equality
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot check equality on 'int' and '{other.type}'", 40, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value == other.value, self.start, other.end)
+
+    def not_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Integer inequality
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot check inequality on 'int' and '{other.type}'", 41, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value != other.value, self.start, other.end)
+
+    def greater_than(self, other: RuntimeValue) -> Boolean:
+        """
+        Greater than
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation > on 'int' and '{other.type}'", 42, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value > other.value, self.start, other.end)
+
+    def greater_than_or_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Greater than or equals
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation >= on 'int' and '{other.type}'", 43, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value >= other.value, self.start, other.end)
+
+    def smaller_than(self, other: RuntimeValue) -> Boolean:
+        """
+        Smaller than
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation < on 'int' and '{other.type}'", 44, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value < other.value, self.start, other.end)
+
+    def smaller_than_or_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Smaller than or equals
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation <= on 'int' and '{other.type}'", 45, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value <= other.value, self.start, other.end)
 
 class Float(RuntimeValue):
     """
@@ -285,6 +387,66 @@ class Float(RuntimeValue):
         Returns if a float is truthy or falsy
         """
         return self.value != 0
+
+    def equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Float equality
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot check equality on 'float' and '{other.type}'", 46, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value == other.value, self.start, other.end)
+
+    def not_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Integer inequality
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot check inequality on 'float' and '{other.type}'", 47, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value != other.value, self.start, other.end)
+
+    def greater_than(self, other: RuntimeValue) -> Boolean:
+        """
+        Greater than
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation > on 'float' and '{other.type}'", 48, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value > other.value, self.start, other.end)
+
+    def greater_than_or_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Greater than or equals
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation >= on 'float' and '{other.type}'", 49, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value >= other.value, self.start, other.end)
+
+    def smaller_than(self, other: RuntimeValue) -> Boolean:
+        """
+        Smaller than
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation < on 'float' and '{other.type}'", 50, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value < other.value, self.start, other.end)
+
+    def smaller_than_or_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Smaller than or equals
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation <= on 'float' and '{other.type}'", 51, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value <= other.value, self.start, other.end)
 
 class Boolean(RuntimeValue):
     """
@@ -367,11 +529,71 @@ class Boolean(RuntimeValue):
         """
         return Int(-self.value, start, self.end)
     
-    def is_true(self) -> RuntimeValue:
+    def is_true(self) -> bool:
         """
         Returns if a boolean is truthy or falsy
         """
         return self.value
+
+    def equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Boolean equality
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot check equality on 'boolean' and '{other.type}'", 52, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value == other.value, self.start, other.end)
+
+    def not_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Integer inequality
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot check inequality on 'boolean' and '{other.type}'", 53, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value != other.value, self.start, other.end)
+
+    def greater_than(self, other: RuntimeValue) -> Boolean:
+        """
+        Greater than
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation > on 'boolean' and '{other.type}'", 54, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value > other.value, self.start, other.end)
+
+    def greater_than_or_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Greater than or equals
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation >= on 'boolean' and '{other.type}'", 55, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value >= other.value, self.start, other.end)
+
+    def smaller_than(self, other: RuntimeValue) -> Boolean:
+        """
+        Smaller than
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation < on 'boolean' and '{other.type}'", 56, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value < other.value, self.start, other.end)
+
+    def smaller_than_or_equals(self, other: RuntimeValue) -> Boolean:
+        """
+        Smaller than or equals
+        """
+        if other.type not in ("int", "float", "boolean"):
+            error: Error = Error("Type Error", f"cannot perform operation <= on 'boolean' and '{other.type}'", 57, self.start, other.end)
+            error.print()
+
+        return Boolean(self.value <= other.value, self.start, other.end)
 
 class Scope:
     """
@@ -390,6 +612,9 @@ class Scope:
             self.constants.add("false")
 
     def declare(self, is_constant: bool, variable_name: str, value: RuntimeValue, start: Position, end: Position) -> None:
+        """
+        Declares a variable
+        """
         if variable_name in self.variables:
             error: Error = Error("Variable Error", f"'{variable_name}' is already in the scope, cannot redeclare '{variable_name}'", 23, start, end)
             error.print()
@@ -399,6 +624,9 @@ class Scope:
             self.constants.add(variable_name)
     
     def assign(self, variable_name: str, value: RuntimeValue, start: Position, end: Position) -> None:
+        """
+        Assigns a variable
+        """
         scope = self.get_scope_from_variable(variable_name)
         if scope is None:
             error: Error = Error("Variable Error", f"'{variable_name}' does not exist, thus cannot be reassigned", 24, start, end)
@@ -411,6 +639,9 @@ class Scope:
         self.variables[variable_name] = value
     
     def get(self, variable_name: str, start: Position, end: Position) -> None:
+        """
+        Retrieves the value of a variable
+        """
         scope = self.get_scope_from_variable(variable_name)
         if scope is None:
             error: Error = Error("Variable Error", f"'{variable_name}' does not exist, so their value cannot be retrieved", 26, start, end)
@@ -419,6 +650,9 @@ class Scope:
         return scope.variables[variable_name].set_position(start, end)
     
     def get_scope_from_variable(self, variable_name: str) -> Scope | None:
+        """
+        Finds which scope the variable lives in
+        """
         if variable_name in self.variables:
             return self
         

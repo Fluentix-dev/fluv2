@@ -42,6 +42,11 @@ std::string Transpiler::block(const std::shared_ptr<BlockStatement> &block, cons
             returned += this->if_unless_else(if_unless_else, indentation);
         }
 
+        if (statement->type == StatementType::Repeat) {
+            std::shared_ptr<RepeatStatement> repeat = std::static_pointer_cast<RepeatStatement>(statement);
+            returned += this->repeat(repeat, indentation);
+        }
+
         if (statement_requires_newline(statement)) {
             returned += "\n";
         }
@@ -78,6 +83,11 @@ std::string Transpiler::if_unless_else(const std::shared_ptr<IfUnlessElseStateme
     }
 
     return indents + returned + indents + "else:\n" + this->if_unless_else(if_unless_else->next, indentation+1);
+}
+
+std::string Transpiler::repeat(const std::shared_ptr<RepeatStatement> &repeat, size_t indentation) {
+    std::string indents = generate_indentation(indentation);
+    return indents + "while not " + this->expression_(repeat->condition) + ".is_true():\n" + this->block(repeat->body, indentation+1);
 }
 
 std::string Transpiler::expression_(const std::shared_ptr<Expression> &expression) {
@@ -130,7 +140,31 @@ std::string Transpiler::binary(const std::shared_ptr<BinaryExpression> &binary) 
         return left + ".mul(" + right + ")";
     }
     
-    return left + ".div(" + right + ")";
+    if (binary->op == "/") {
+        return left + ".div(" + right + ")";
+    }
+
+    if (binary->op == "=") {
+        return left + ".equals(" + right + ")";
+    }
+
+    if (binary->op == "!=") {
+        return left + ".not_equals(" + right + ")";
+    }
+
+    if (binary->op == ">") {
+        return left + ".greater_than(" + right + ")";
+    }
+
+    if (binary->op == ">=") {
+        return left + ".greater_than_or_equals(" + right + ")";
+    }
+
+    if (binary->op == "<") {
+        return left + ".smaller_than(" + right + ")";
+    }
+
+    return left + ".smaller_than_or_equals(" + right + ")";
 }
 
 std::string Transpiler::unary(const std::shared_ptr<UnaryExpression> &unary) {

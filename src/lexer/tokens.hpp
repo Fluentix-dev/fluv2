@@ -10,6 +10,13 @@ enum struct TokenType {
     Divide,
     LParen,
     RParen,
+    Greater,
+    Smaller,
+    GreaterThanOrEqual,
+    SmallerThanOrEqual,
+    Equal,
+    NotEqual,
+    Colon,
     Int,
     Float,
     Identifier,
@@ -41,7 +48,10 @@ enum struct TokenType {
     At,
     Indent,
     Dedent,
-    Then
+    Then,
+    And,
+    Or,
+    Not
 };
 
 struct Token {

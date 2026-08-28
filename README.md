@@ -38,3 +38,30 @@ Flu is a programming language that the Fluentix community is trying to revive
 - Error `#28`: Expected `then` in if statement `if <condition> then` or `unless <condition> then`. Classified as a Syntax Error
 - Error `#29`: Unindent does not match any outer indentation level. Classified as a Syntax Error
 - Error `#30`: Expected `then` in if statement `else then`. Classified as a Syntax Error
+- Error `#31`: Expected `=` after `!`. Classified as a Syntax Error
+- Error `#32`: Expected `:` in repeat statement `repeat: until <condition>`. Classified as a Syntax Error
+- Error `#33`: Expected `until` in repeat statement `repeat: until <condition>`. Classified as a Syntax Error
+- Error `#34`: Cannot check equality for something to something. Classified as a Type Error
+- Error `#35`: Cannot check inequality for something to something. Classified as a Type Error
+- Error `#36`: Cannot perform operation `>` on something and something. Classified as a Type Error
+- Error `#37`: Cannot perform operation `>=` on something and something. Classified as a Type Error
+- Error `#38`: Cannot perform operation `<` on something and something. Classified as a Type Error
+- Error `#39`: Cannot perform operation `<=` on something and something. Classified as a Type Error
+- Error `#40`: Cannot check equality for `int` to a non-number. Classified as a Type Error
+- Error `#41`: Cannot check inequality for `int` to a non-number. Classified as a Type Error
+- Error `#42`: Cannot perform operation `>` on `int` and a non-number. Classified as a Type Error
+- Error `#43`: Cannot perform operation `>=` on `int` and a non-number. Classified as a Type Error
+- Error `#44`: Cannot perform operation `<` on `int` and a non-number. Classified as a Type Error
+- Error `#45`: Cannot perform operation `<=` on `int` and a non-number. Classified as a Type Error
+- Error `#46`: Cannot check equality for `float` to a non-number. Classified as a Type Error
+- Error `#47`: Cannot check inequality for `float` to a non-number. Classified as a Type Error
+- Error `#48`: Cannot perform operation `>` on `float` and a non-number. Classified as a Type Error
+- Error `#49`: Cannot perform operation `>=` on `float` and a non-number. Classified as a Type Error
+- Error `#50`: Cannot perform operation `<` on `float` and a non-number. Classified as a Type Error
+- Error `#51`: Cannot perform operation `<=` on `float` and a non-number. Classified as a Type Error
+- Error `#52`: Cannot check equality for `boolean` to a non-number. Classified as a Type Error
+- Error `#53`: Cannot check inequality for `boolean` to a non-number. Classified as a Type Error
+- Error `#54`: Cannot perform operation `>` on `boolean` and a non-number. Classified as a Type Error
+- Error `#55`: Cannot perform operation `>=` on `boolean` and a non-number. Classified as a Type Error
+- Error `#56`: Cannot perform operation `<` on `boolean` and a non-number. Classified as a Type Error
+- Error `#57`: Cannot perform operation `<=` on `boolean` and a non-number. Classified as a Type Error

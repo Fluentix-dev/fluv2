@@ -94,6 +94,10 @@ StatementResult Parser::statement() {
         return this->if_unless_else();
     }
 
+    if (this->current_token.type == TokenType::Repeat) {
+        return this->repeat();
+    }
+
     ExpressionResult expression = this->expression();
     if (expression.node == nullptr) {
         return StatementResult(nullptr, expression.error);
@@ -273,8 +277,69 @@ StatementResult Parser::if_unless_else() {
     return StatementResult(std::make_shared<IfUnlessElseStatement>(condition.node, std::static_pointer_cast<BlockStatement>(body.node), std::make_shared<IfUnlessElseStatement>(std::make_shared<IdentifierExpression>(true_identifier, this->current_token.start, this->current_token.start), std::static_pointer_cast<BlockStatement>(else_body.node), nullptr, else_start, else_body.node->end), start, else_body.node->end), Error("NULL", "", 0, this->current_token.start, this->current_token.end));
 }
 
+StatementResult Parser::repeat() {
+    Position start = this->current_token.start;
+    this->advance();
+    if (this->current_token.type != TokenType::Colon) {
+        return StatementResult(nullptr, Error("Syntax Error", "expected ':' in repeat statement", 32, this->current_token.start, this->current_token.end));
+    }
+
+    this->advance();
+    if (this->current_token.type != TokenType::Until) {
+        return StatementResult(nullptr, Error("Syntax Error", "expected 'until' in repeat statement", 33, this->current_token.start, this->current_token.end));
+    }
+
+    this->advance();
+    ExpressionResult condition = this->expression();
+    if (condition.error.type != "NULL") {
+        return StatementResult(nullptr, condition.error);
+    }
+
+    StatementResult body = StatementResult(nullptr, Error("NULL", "", 0, this->current_token.start, this->current_token.start));
+    if (this->current_token.type == TokenType::Newline) {
+        body = this->inner_block();
+        if (body.error.type != "NULL") {
+            return body;
+        }
+    } else {
+        body = this->statement();
+        if (body.error.type != "NULL") {
+            return body;
+        }
+
+        std::vector<std::shared_ptr<Statement>> block = {body.node};
+        body.node = std::make_shared<BlockStatement>(block, body.node->start, body.node->end);
+        while (this->current_token.type == TokenType::Newline) {
+            this->advance();
+        }
+    }
+
+    return StatementResult(std::make_shared<RepeatStatement>(condition.node, std::static_pointer_cast<BlockStatement>(body.node), start, body.node->end), Error("NULL", "", 0, this->current_token.start, this->current_token.start));
+}
+
 ExpressionResult Parser::expression() {
-    return this->additive();
+    return this->comparsion();
+}
+
+ExpressionResult Parser::comparsion() {
+    ExpressionResult left = this->additive();
+    if (left.error.type != "NULL") {
+        return left;
+    }
+
+    while (this->current_token.type == TokenType::Equal || this->current_token.type == TokenType::NotEqual || this->current_token.type == TokenType::Greater || this->current_token.type == TokenType::GreaterThanOrEqual || this->current_token.type == TokenType::Smaller || this->current_token.type == TokenType::SmallerThanOrEqual) {
+        std::string op = this->current_token.value;
+        this->advance();
+        
+        ExpressionResult right = this->additive();
+        if (right.error.type != "NULL") {
+            return right;
+        }
+
+        left.node = std::make_shared<BinaryExpression>(left.node, op, right.node, left.node->start, right.node->end);
+    }
+
+    return left;
 }
 
 ExpressionResult Parser::additive() {

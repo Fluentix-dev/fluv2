@@ -22,7 +22,9 @@ private:
     StatementResult constant_declaration();
     StatementResult assignment(const std::shared_ptr<Expression> &node);
     StatementResult if_unless_else();
+    StatementResult repeat();
     ExpressionResult expression();
+    ExpressionResult comparsion();
     ExpressionResult additive();
     ExpressionResult multiplicative();
     ExpressionResult unary();
